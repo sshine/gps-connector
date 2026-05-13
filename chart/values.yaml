@@ -68,6 +68,19 @@ archiver:
   archiveAfterMinutes: 1440
   deleteAfterMinutes: 2880
 
+mqtt:
+  port: 8883
+  gateway:
+    # create: true  — deploy a Gateway resource targeting gateway pods via selector.
+    #                 No new LoadBalancer is created; this adds a listener to the
+    #                 selected gateway deployment (e.g. istio-ingressgateway).
+    # create: false — skip Gateway creation. Set existing to a Gateway reference
+    #                 (namespace/name) that already has a port 8883 TLS listener.
+    create: true
+    selector:
+      istio: ingressgateway
+    existing: ""
+
 secrets:
   main: gps-connector-secrets
   rootCa: gps-connector-root-ca

@@ -1,4 +1,5 @@
-apiVersion: gateway.networking.k8s.io/v1
+{{- if .Values.mqtt.gateway.create }}
+apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
   name: mqtt
@@ -6,13 +7,15 @@ metadata:
   labels:
     {{- include "gps-connector.labels" . | nindent 4 }}
 spec:
-  gatewayClassName: istio
-  listeners:
-    - name: mqtt-tls
-      port: 8883
-      protocol: TLS
+  selector:
+    {{- toYaml .Values.mqtt.gateway.selector | nindent 4 }}
+  servers:
+    - port:
+        number: {{ .Values.mqtt.port }}
+        name: mqtt-tls
+        protocol: TLS
       tls:
-        mode: Passthrough
-      allowedRoutes:
-        namespaces:
-          from: Same
+        mode: PASSTHROUGH
+      hosts:
+        - "*"
+{{- end }}

@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: mqtt
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gps-connector.labels" . | nindent 4 }}
+spec:
+  hosts:
+    - "*"
+  gateways:
+    {{- if .Values.mqtt.gateway.create }}
+    - mqtt
+    {{- else }}
+    - {{ required "mqtt.gateway.existing must be set when mqtt.gateway.create is false" .Values.mqtt.gateway.existing }}
+    {{- end }}
+  tls:
+    - match:
+        - port: {{ .Values.mqtt.port }}
+          sniHosts:
+            - "*"
+      route:
+        - destination:
+            host: rabbitmq.{{ .Release.Namespace }}.svc.cluster.local
+            port:
+              number: {{ .Values.mqtt.port }}
