@@ -22,12 +22,22 @@ jobs:
       - name: Lint
         run: helm lint ./chart
 
-      # renders all templates with default values (mqtt.gateway.create=true)
+      # renders all templates with default values (mqtt.gateway.create=true), including secrets
       - name: Template (create gateway)
         run: |
           helm template gps-connector ./chart \
             --namespace gps-connector \
-            --values ./chart/values-images.yaml
+            --values ./chart/values-images.yaml \
+            --set secretData.main.RABBITMQ_DEFAULT_USER=dummy \
+            --set secretData.main.RABBITMQ_DEFAULT_PASS=dummy \
+            --set secretData.main.MINIO_ROOT_USER=dummy \
+            --set secretData.main.MINIO_ROOT_PASSWORD=dummy \
+            --set secretData.main.SMTP_USER=dummy \
+            --set secretData.main.SMTP_PASSWORD=dummy \
+            --set secretData.rootCa."ca\.crt"=dummy \
+            --set secretData.rabbitmqTls."ca\.crt"=dummy \
+            --set secretData.rabbitmqTls."server\.crt"=dummy \
+            --set secretData.rabbitmqTls."server\.key"=dummy
 
       # renders all templates with shared services (patchService triggers the hook Job)
       - name: Template (shared services)

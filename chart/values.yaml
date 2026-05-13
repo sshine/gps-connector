@@ -49,3 +49,12 @@ secrets:
   main: gps-connector-secrets
   rootCa: gps-connector-root-ca
   rabbitmqTls: rabbitmq-tls
+
+# Optionally deploy secrets via Helm. Supply key/value pairs to create the
+# corresponding Secret; omit to manage secrets out-of-band.
+#   --set secretData.main.SOME_KEY=value
+#   --set-file secretData.rootCa."ca\.crt"=/path/to/ca.crt
+secretData:
+  main: {}
+  rootCa: {}
+  rabbitmqTls: {}
