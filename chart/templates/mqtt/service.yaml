@@ -1,0 +1,18 @@
+{{- if .Values.mqtt.gateway.create }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.mqtt.gateway.service.name }}
+  namespace: {{ .Values.mqtt.gateway.service.namespace }}
+  labels:
+    {{- include "gps-connector.labels" . | nindent 4 }}
+spec:
+  type: LoadBalancer
+  selector:
+    {{- toYaml .Values.mqtt.gateway.selector | nindent 4 }}
+  ports:
+    - name: mqtt-tls
+      port: {{ .Values.mqtt.port }}
+      protocol: TCP
+      targetPort: {{ .Values.mqtt.port }}
+{{- end }}

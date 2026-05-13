@@ -1,0 +1,31 @@
+{{- if .Values.mqtt.gateway.create }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mqtt-gateway
+  namespace: {{ .Values.mqtt.gateway.service.namespace }}
+  labels:
+    {{- include "gps-connector.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- toYaml .Values.mqtt.gateway.selector | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        inject.istio.io/templates: gateway
+      labels:
+        sidecar.istio.io/inject: "true"
+        {{- toYaml .Values.mqtt.gateway.selector | nindent 8 }}
+    spec:
+      serviceAccountName: mqtt-gateway
+      containers:
+        - name: istio-proxy
+          image: auto
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            runAsUser: 1337
+            runAsGroup: 1337
+{{- end }}

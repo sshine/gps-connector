@@ -29,11 +29,10 @@ jobs:
             --namespace gps-connector \
             --values ./chart/values-images.yaml
 
-      # renders all templates with an existing gateway reference (mqtt.gateway.create=false)
-      - name: Template (existing gateway)
+      # renders all templates with shared services (patchService triggers the hook Job)
+      - name: Template (shared services)
         run: |
           helm template gps-connector ./chart \
             --namespace gps-connector \
             --values ./chart/values-images.yaml \
-            --values ./chart/values-shared-services.yaml \
-            --set mqtt.gateway.existing=some-namespace/some-gateway
+            --values ./chart/values-shared-services.yaml

@@ -1,4 +1,3 @@
-{{- if .Values.mqtt.gateway.create }}
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
 metadata:
@@ -18,4 +17,3 @@ spec:
         mode: PASSTHROUGH
       hosts:
         - "*"
-{{- end }}

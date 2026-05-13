@@ -1,4 +1,5 @@
-# Assumes the cluster runs Istio as its service mesh.
+# Deploys a dedicated Istio ingress gateway (Deployment + Service) in mqtt.gateway.service.namespace.
+# Requires Istio to be installed in the cluster with injection enabled in that namespace.
 #
 # Some cluster-level dependencies are expected to be pre-installed and are not managed by this chart:
 # - cert-manager
@@ -36,13 +37,13 @@ archiver:
 mqtt:
   port: 8883
   gateway:
-    # Deploys a Gateway resource targeting gateway pods via selector.
-    # No new LoadBalancer is created; this adds a listener to the
-    # selected gateway deployment (e.g. istio-ingressgateway).
+    # Deploys a dedicated Istio gateway Deployment + Service + the Gateway resource.
     create: true
+    service:
+      namespace: gps-connector
+      name: mqtt-gateway
     selector:
-      istio: ingressgateway
-    existing: ""
+      app: mqtt-gateway
 
 secrets:
   main: gps-connector-secrets

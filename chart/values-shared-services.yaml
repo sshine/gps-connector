@@ -1,7 +1,6 @@
-# Assumes the cluster runs Istio as its service mesh (tested against Istio 1.21),
-# with an existing Istio Gateway resource reachable at mqtt.gateway.existing.
-# A post-install hook patches mqtt.port onto the gateway service in
-# mqtt.gateway.patchService.namespace — requires cross-namespace RBAC on that namespace.
+# Assumes the cluster runs Istio as its service mesh (tested against Istio 1.21).
+# Uses the shared istio-ingressgateway; a post-install hook patches mqtt.port onto it.
+# Requires cross-namespace RBAC to patch the service in mqtt.gateway.service.namespace.
 # Other cluster-level dependencies (cert-manager, external-dns, storage classes,
 # OIDC provider) are expected to be pre-installed and are not managed by this chart.
 # Use alongside values-images.yaml for image references.
@@ -34,14 +33,14 @@ archiver:
 mqtt:
   port: 8883
   gateway:
-    # Skips Gateway creation. Set existing to a Gateway reference
-    # (namespace/name) that already has a port 8883 TLS listener.
-    # A hook Job will patch mqtt.port onto the gateway service.
+    # Skips deploying a gateway Deployment + Service; patches mqtt.port onto the
+    # shared gateway service at service.namespace/service.name instead.
     create: false
-    existing: ""  # e.g. knative-serving/knative-ingress-gateway
-    patchService:
+    service:
       namespace: istio-system
       name: istio-ingressgateway
+    selector:
+      istio: ingressgateway
 
 secrets:
   main: gps-connector-secrets

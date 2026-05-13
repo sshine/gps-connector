@@ -9,11 +9,7 @@ spec:
   hosts:
     - "*"
   gateways:
-    {{- if .Values.mqtt.gateway.create }}
     - mqtt
-    {{- else }}
-    - {{ required "mqtt.gateway.existing must be set when mqtt.gateway.create is false" .Values.mqtt.gateway.existing }}
-    {{- end }}
   tls:
     - match:
         - port: {{ .Values.mqtt.port }}

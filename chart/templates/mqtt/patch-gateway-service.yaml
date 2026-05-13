@@ -24,7 +24,7 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["services"]
-    resourceNames: [{{ .Values.mqtt.gateway.patchService.name | quote }}]
+    resourceNames: [{{ .Values.mqtt.gateway.service.name | quote }}]
     verbs: ["get", "patch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -68,9 +68,9 @@ spec:
             - kubectl
             - patch
             - svc
-            - {{ .Values.mqtt.gateway.patchService.name }}
+            - {{ .Values.mqtt.gateway.service.name }}
             - -n
-            - {{ .Values.mqtt.gateway.patchService.namespace }}
+            - {{ .Values.mqtt.gateway.service.namespace }}
             - --type=strategic
             - -p
             - |
