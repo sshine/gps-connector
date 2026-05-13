@@ -1,47 +1,12 @@
-images:
-  api:
-    repository: droidsagencyairegistry.azurecr.io/gps-api
-    tag: latest
-  alloy:
-    repository: grafana/alloy
-    tag: v1.9.0
-  archiver:
-    repository: droidsagencyairegistry.azurecr.io/gps-archiver
-    tag: latest
-  bento:
-    repository: ghcr.io/warpstreamlabs/bento
-    tag: latest
-  cratedb:
-    repository: crate
-    tag: 4.6.7
-  grafana:
-    repository: grafana/grafana
-    tag: 11.6.0
-  iotAgent:
-    repository: fiware/iotagent-json
-    tag: 3.14.0
-  loki:
-    repository: grafana/loki
-    tag: 3.4.2
-  minio:
-    repository: minio/minio
-    tag: latest
-  mongodb:
-    repository: mongo
-    tag: 4.2
-  orionLd:
-    repository: fiware/orion-ld
-    tag: latest
-  quantumleap:
-    repository: orchestracities/quantumleap
-    tag: latest
-  rabbitmq:
-    repository: rabbitmq
-    tag: 3.13-management
-  redis:
-    repository: redis
-    tag: 6.2
-
+# Assumes the cluster runs Istio as its service mesh.
+#
+# Some cluster-level dependencies are expected to be pre-installed and are not managed by this chart:
+# - cert-manager
+# - external-dns
+# - storage classes
+# - OIDC provider
+#
+# Use alongside values-images.yaml for image references. See .github/workflows/helm-ci.yaml for example run.
 storage:
   cratedb: 1Gi
   loki: 1Gi
@@ -71,11 +36,9 @@ archiver:
 mqtt:
   port: 8883
   gateway:
-    # create: true  — deploy a Gateway resource targeting gateway pods via selector.
-    #                 No new LoadBalancer is created; this adds a listener to the
-    #                 selected gateway deployment (e.g. istio-ingressgateway).
-    # create: false — skip Gateway creation. Set existing to a Gateway reference
-    #                 (namespace/name) that already has a port 8883 TLS listener.
+    # Deploys a Gateway resource targeting gateway pods via selector.
+    # No new LoadBalancer is created; this adds a listener to the
+    # selected gateway deployment (e.g. istio-ingressgateway).
     create: true
     selector:
       istio: ingressgateway

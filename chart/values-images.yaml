@@ -1,0 +1,47 @@
+# Values overlay for container image references.
+# Pass this alongside one of values.yaml or values-shared-services.yaml, e.g.:
+#
+#   helm install gps-connector ./chart -f values-images.yaml -f values.yaml
+images:
+  api:
+    repository: droidsagencyairegistry.azurecr.io/gps-api
+    tag: latest
+  alloy:
+    repository: grafana/alloy
+    tag: v1.9.0
+  archiver:
+    repository: droidsagencyairegistry.azurecr.io/gps-archiver
+    tag: latest
+  bento:
+    repository: ghcr.io/warpstreamlabs/bento
+    tag: latest
+  cratedb:
+    repository: crate
+    tag: 4.6.7
+  grafana:
+    repository: grafana/grafana
+    tag: 11.6.0
+  iotAgent:
+    repository: fiware/iotagent-json
+    tag: 3.14.0
+  loki:
+    repository: grafana/loki
+    tag: 3.4.2
+  minio:
+    repository: minio/minio
+    tag: latest
+  mongodb:
+    repository: mongo
+    tag: 4.2
+  orionLd:
+    repository: fiware/orion-ld
+    tag: latest
+  quantumleap:
+    repository: orchestracities/quantumleap
+    tag: latest
+  rabbitmq:
+    repository: rabbitmq
+    tag: 3.13-management
+  redis:
+    repository: redis
+    tag: 6.2

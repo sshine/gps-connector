@@ -1,0 +1,49 @@
+# Assumes the cluster runs Istio as its service mesh (tested against Istio 1.21),
+# with an existing Istio Gateway resource reachable at mqtt.gateway.existing.
+# A post-install hook patches mqtt.port onto the gateway service in
+# mqtt.gateway.patchService.namespace — requires cross-namespace RBAC on that namespace.
+# Other cluster-level dependencies (cert-manager, external-dns, storage classes,
+# OIDC provider) are expected to be pre-installed and are not managed by this chart.
+# Use alongside values-images.yaml for image references.
+storage:
+  cratedb: 1Gi
+  loki: 1Gi
+  minio: 5Gi
+  mongodb: 1Gi
+  rabbitmq: 5Gi
+  redis: 256Mi
+
+api:
+  host: gps-connector-api.droidsagencyai.com
+  oidcIssuerUrl: https://auth.droidsagencyai.com/realms/GPS-Connector-Test
+  oidcClientId: gps-connector-api
+  corsAllowedOrigins: "http://localhost:5173,http://localhost:3000,https://gps-connector.droidsagencyai.com"
+  archiveBucket: gps-archive
+
+grafana:
+  smtp:
+    host: smtp.office365.com:587
+  alerting:
+    email: daniel@droidsagency.com
+
+archiver:
+  schedule: "0 0,12 * * *"
+  archiveAfterMinutes: 1440
+  deleteAfterMinutes: 2880
+
+mqtt:
+  port: 8883
+  gateway:
+    # Skips Gateway creation. Set existing to a Gateway reference
+    # (namespace/name) that already has a port 8883 TLS listener.
+    # A hook Job will patch mqtt.port onto the gateway service.
+    create: false
+    existing: ""  # e.g. knative-serving/knative-ingress-gateway
+    patchService:
+      namespace: istio-system
+      name: istio-ingressgateway
+
+secrets:
+  main: gps-connector-secrets
+  rootCa: gps-connector-root-ca
+  rabbitmqTls: rabbitmq-tls
