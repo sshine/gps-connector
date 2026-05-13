@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  labels:
+    {{- include "gps-connector.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+        - name: minio
+          image: {{ .Values.images.minio.repository }}:{{ .Values.images.minio.tag }}
+          ports:
+            - containerPort: 9000 # S3 API
+            - containerPort: 9001 # Admin UI
+          env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.main }}
+                  key: MINIO_ROOT_USER
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.main }}
+                  key: MINIO_ROOT_PASSWORD
+          volumeMounts:
+            - mountPath: /data
+              name: data
+          command: ["minio", "server", "/data", "--console-address", ":9001"]
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: minio-data

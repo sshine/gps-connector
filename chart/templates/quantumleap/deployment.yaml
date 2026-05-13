@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quantumleap
+  labels:
+    {{- include "gps-connector.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quantumleap
+  template:
+    metadata:
+      labels:
+        app: quantumleap
+    spec:
+      containers:
+        - name: quantumleap
+          image: {{ .Values.images.quantumleap.repository }}:{{ .Values.images.quantumleap.tag }}
+          ports:
+            - containerPort: 8668
+          env:
+            - name: CRATE_HOST
+              value: cratedb
+            - name: REDIS_HOST
+              value: redis
+            - name: QL_DEFAULT_DB
+              value: crate

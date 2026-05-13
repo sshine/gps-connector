@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orion-ld
+  labels:
+    {{- include "gps-connector.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orion-ld
+  template:
+    metadata:
+      labels:
+        app: orion-ld
+    spec:
+      containers:
+        - name: orion-ld
+          image: {{ .Values.images.orionLd.repository }}:{{ .Values.images.orionLd.tag }}
+          ports:
+            - containerPort: 1026
+          env:
+            - name: ORIONLD_MULTI_SERVICE
+              value: "TRUE"
+          args: ["-logLevel", "INFO", "-dbhost", "mongodb"]

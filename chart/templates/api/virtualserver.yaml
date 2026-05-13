@@ -1,0 +1,20 @@
+apiVersion: k8s.nginx.org/v1
+kind: VirtualServer
+metadata:
+  name: api
+  labels:
+    {{- include "gps-connector.labels" . | nindent 4 }}
+spec:
+  host: {{ .Values.api.host }}
+  tls:
+    cert-manager:
+      cluster-issuer: letsencrypt-prod
+    secret: gps-connector-api-tls
+  upstreams:
+    - name: api
+      service: api
+      port: 8080
+  routes:
+    - path: /
+      action:
+        pass: api

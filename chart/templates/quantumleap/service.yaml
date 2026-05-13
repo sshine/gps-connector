@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: quantumleap
+  labels:
+    {{- include "gps-connector.labels" . | nindent 4 }}
+spec:
+  selector:
+    app: quantumleap
+  ports:
+    - port: 8668
+      targetPort: 8668

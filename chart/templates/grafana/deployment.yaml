@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  labels:
+    {{- include "gps-connector.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - name: grafana
+          image: {{ .Values.images.grafana.repository }}:{{ .Values.images.grafana.tag }}
+          ports:
+            - containerPort: 3000
+          env:
+            - name: GF_SMTP_ENABLED
+              value: "true"
+            - name: GF_SMTP_HOST
+              value: {{ .Values.grafana.smtp.host | quote }}
+            - name: GF_SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.main }}
+                  key: SMTP_USER
+            - name: GF_SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.main }}
+                  key: SMTP_PASSWORD
+            - name: GF_SMTP_FROM_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.main }}
+                  key: SMTP_USER
+          volumeMounts:
+            - mountPath: /etc/grafana/provisioning/datasources/datasources.yaml
+              name: config
+              subPath: datasources.yaml
+            - mountPath: /etc/grafana/provisioning/alerting/alerting.yaml
+              name: config
+              subPath: alerting.yaml
+            - mountPath: /etc/grafana/provisioning/alerting/contactpoints.yaml
+              name: config
+              subPath: contactpoints.yaml
+            - mountPath: /etc/grafana/provisioning/alerting/policies.yaml
+              name: config
+              subPath: policies.yaml
+      volumes:
+        - name: config
+          configMap:
+            name: grafana-datasources

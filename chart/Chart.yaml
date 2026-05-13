@@ -1,0 +1,5 @@
+apiVersion: v2
+name: gps-connector
+description: GPS Connector platform chart
+version: 0.1.0
+appVersion: latest

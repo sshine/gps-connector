@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: orion-ld
+  labels:
+    {{- include "gps-connector.labels" . | nindent 4 }}
+spec:
+  selector:
+    app: orion-ld
+  ports:
+    - port: 1026
+      targetPort: 1026

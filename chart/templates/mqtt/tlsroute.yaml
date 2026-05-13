@@ -1,0 +1,15 @@
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TLSRoute
+metadata:
+  name: mqtt
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gps-connector.labels" . | nindent 4 }}
+spec:
+  parentRefs:
+    - name: mqtt
+      sectionName: mqtt-tls
+  rules:
+    - backendRefs:
+        - name: rabbitmq
+          port: 8883

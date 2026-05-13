@@ -1,0 +1,74 @@
+images:
+  api:
+    repository: droidsagencyairegistry.azurecr.io/gps-api
+    tag: latest
+  alloy:
+    repository: grafana/alloy
+    tag: v1.9.0
+  archiver:
+    repository: droidsagencyairegistry.azurecr.io/gps-archiver
+    tag: latest
+  bento:
+    repository: ghcr.io/warpstreamlabs/bento
+    tag: latest
+  cratedb:
+    repository: crate
+    tag: 4.6.7
+  grafana:
+    repository: grafana/grafana
+    tag: 11.6.0
+  iotAgent:
+    repository: fiware/iotagent-json
+    tag: 3.14.0
+  loki:
+    repository: grafana/loki
+    tag: 3.4.2
+  minio:
+    repository: minio/minio
+    tag: latest
+  mongodb:
+    repository: mongo
+    tag: 4.2
+  orionLd:
+    repository: fiware/orion-ld
+    tag: latest
+  quantumleap:
+    repository: orchestracities/quantumleap
+    tag: latest
+  rabbitmq:
+    repository: rabbitmq
+    tag: 3.13-management
+  redis:
+    repository: redis
+    tag: 6.2
+
+storage:
+  cratedb: 1Gi
+  loki: 1Gi
+  minio: 5Gi
+  mongodb: 1Gi
+  rabbitmq: 5Gi
+  redis: 256Mi
+
+api:
+  host: gps-connector-api.droidsagencyai.com
+  oidcIssuerUrl: https://auth.droidsagencyai.com/realms/GPS-Connector-Test
+  oidcClientId: gps-connector-api
+  corsAllowedOrigins: "http://localhost:5173,http://localhost:3000,https://gps-connector.droidsagencyai.com"
+  archiveBucket: gps-archive
+
+grafana:
+  smtp:
+    host: smtp.office365.com:587
+  alerting:
+    email: daniel@droidsagency.com
+
+archiver:
+  schedule: "0 0,12 * * *"
+  archiveAfterMinutes: 1440
+  deleteAfterMinutes: 2880
+
+secrets:
+  main: gps-connector-secrets
+  rootCa: gps-connector-root-ca
+  rabbitmqTls: rabbitmq-tls
